@@ -1,7 +1,38 @@
 pragma solidity ^0.5.0;
 
+contract Rockets {
+   address[] rockets;
+   function createRocket(uint _enrollment_duration, uint _total_duration, uint _penalty) public {
+       
+      Rocket newRocket = new Rocket(_enrollment_duration, _total_duration, _penalty);            
+      rockets.push(address(newRocket));   
+   }
+   function getDeployedRockets() public view returns (address[] memory) {
+      return rockets;
+   }
+}
+
 
 contract Rocket {
+    
+    uint public enrollment_duration;
+    uint public total_duration;
+    uint public penalty;
+    uint public enrollment_end;
+    uint public expiration;
+    
+    constructor (uint _enrollment_duration, uint _total_duration, uint _penalty) public {
+    	enrollment_duration = _enrollment_duration;
+    	total_duration = _total_duration;
+    	penalty = _penalty;
+    	enrollment_end = block.timestamp+enrollment_duration;
+        expiration = block.timestamp+total_duration;
+    
+
+
+   }
+
+
 
 	struct Account {
 
@@ -9,8 +40,9 @@ contract Rocket {
 		uint256 shares;
 	}
 	
-	uint enrollment_end = block.timestamp+86400;
-	uint expiration = block.timestamp+604800;
+
+
+
 
 	mapping(address => Account) public accounts;
 	
@@ -85,10 +117,10 @@ contract Rocket {
 
 		amount = account.balance;
 		if (block.timestamp<expiration && block.timestamp>enrollment_end) {
-		    payout = amount*4/5;
+		    payout = amount*(100-penalty)/100;
 		
     		User.transfer((payout)); //contract transfers 80% of the user's balance to user
-    		pot+=amount/5;            //remaining 20% is added to the pot
+    		pot+=amount*penalty/100;            //remaining 20% is added to the pot
 		}
 		else {
 		    payout=amount;
