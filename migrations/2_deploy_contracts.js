@@ -1,5 +1,5 @@
-var Rocket = artifacts.require("./Rocket.sol");
+var Rockets = artifacts.require("./Rockets.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Rocket);
+  deployer.deploy(Rockets);
 };
